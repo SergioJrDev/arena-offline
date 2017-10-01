@@ -1,42 +1,24 @@
-const
-    gulp = require('gulp'), 
-    stylus = require('gulp-stylus'),
-    autoprefixer = require('gulp-autoprefixer'),
-    minify = require('gulp-minify'),
-    
-    src = {
-        stylus: 'css/**/*.styl',
-        css_input: './css/style.styl',
-        css_output: 'dist/css',
-        js_input: './js/*.js',
-        js_output: 'dist/js',
-        prefix: ['last 2 versions', 'Firefox > 20', '> 5%']
-    };
+var gulp = require('gulp');
+var stylus = require('gulp-stylus');
+var autoprefixer = require('gulp-autoprefixer');
 
 gulp.task('stylus', function () {
-  return gulp.src(src.css_input)
+  return gulp.src('./css/style.styl')
     .pipe(stylus({
       compress: true
     }))
     .pipe(autoprefixer({
-        browsers: src.prefix,   
+        browsers: ['last 2 versions', 'Firefox > 20', '> 5%'],
         cascade: false
     }))
-    .pipe(gulp.dest(src.css_output));
-});
-
-gulp.task('minify', function() {
-  gulp.src(src.js_input)
-    .pipe(minify({
-        ext:{
-            min:'-min.js'
-        },
-    }))
-    .pipe(gulp.dest(src.js_output))
+    .pipe(gulp.dest('dist/css'));
 });
 
 gulp.task('watch', function() {
-	gulp.watch([src.stylus, src.js_input], ['default']);
+	gulp.watch('css/components/*.styl', ['stylus']);
+    gulp.watch('plugins/Components/*.styl', ['stylus']);
+    gulp.watch('css/shared/*.styl', ['stylus']);
 });
 
-gulp.task('default', ['stylus', 'minify']);
+
+gulp.task('default', ['stylus', 'watch']);
